@@ -5,7 +5,9 @@ f_bundle(x)
 Tangent bundle vector field
 ```
 """
-function f_bundle!(f, v, p)
+
+
+function F_bundle!(f, v, p)
 
     @unpack E, A, s = p   
     v₁, v₂ = eachcomponent(v)
@@ -16,7 +18,7 @@ function f_bundle!(f, v, p)
     project!(component(f, 1),  - v₂ )
     project!(component(f, 2), + E*v₁ - A*(v₁*cos2t))
     
-    return f
+    return F
 end
 
 
