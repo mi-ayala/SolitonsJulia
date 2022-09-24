@@ -56,3 +56,9 @@ newton!((F, DF, x) -> (F!(F, x, Df), DF!(DF, x, Df)), x)
 v = component(x, 2)
 newton!((F, DF, x) -> (F!(F, x, Df), DF!(DF, x, Df)), x)
 
+
+# x̄ = x
+# ### Bound Y
+# x̄_interval = Interval.(x̄)
+# F_interval = F!(x̄_interval)
+# DF_interval = DF(x̄_interval, space(x̄_interval), space(x̄_interval), eltype(x̄_interval))
