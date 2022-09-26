@@ -44,22 +44,42 @@ end
 
 function F_DF!(F, DF, P, f, para, bundle)
 
-    DF .= 0
-
+    ### Function
     project!(F, -f!(f, P, para) + Derivative(1,0)*P)
     
-    for i = 1:4
-    component(F, i) = component(F, i) +  λ*component(Derivative(0,1)*P,i)*Sequence(Fourier(0, 1.0) ⊗ Taylor(1), [0, 1]) 
-    end
-        
     γ = project(
         Sequence(Fourier(2, 1.0)^4, [zeros(5) ; zeros(5) ; [.5, 0, 0, 0, .5] ; -2 * [0.5im, 0, 0, 0, -0.5im]]),
         space(bundle))
-
+    
     for i = 1:4
+    component(F, i) .= component(F, i) +  λ*component(Derivative(0,1)*P,i)*Sequence(Fourier(0, 1.0) ⊗ Taylor(1), [0, 1]) 
     component(F, i)[(:,0)] .= component(P, i)[(:,0)] .- component(γ, i)
     component(F, i)[(:,1)] .= component(P, i)[(:,1)] .- component(bundle, i)
     end
+        
+    ### Derivative
+    DF .= 0
+
+    component(component(DF, 1, 2), 1)[1,:] .= 24.600655549587863
+    component(component(DF, 1, 2), 2)[1,:] .= -2.4927169722923335
+    component(component(DF, 1, 2), 3)[1,:] .= 71.81142025024573
+
+    project!(component(DF, 1, 1),  component(Df, 1, 1) + Derivative(1,0) + λ*Derivative(0,1))
+    project!(component(DF, 1, 2), component(Df, 1,2))
+    project!(component(DF, 1, 3), component(Df, 1,3))
+    project!(component(DF, 1, 4), component(Df, 1,4))
+    project!(component(DF, 2, 1), component(Df, 2,1))
+    project!(component(DF, 2, 2), component(Df, 2,2)+ Derivative(1,0) + λ*Derivative(0,1))
+    project!(component(DF, 2, 3), component(Df, 2,3))
+    project!(component(DF, 2, 4), component(Df, 2,4))
+    project!(component(DF, 3, 1), component(Df, 3,1))
+    project!(component(DF, 3, 2), component(Df, 3,2))
+    project!(component(DF, 3, 3), component(Df, 3,3)+ Derivative(1,0) + λ*Derivative(0,1))
+    project!(component(DF, 3, 4), component(Df, 3,4))
+    project!(component(DF, 4, 1), component(Df, 4,1))
+    project!(component(DF, 4, 2), component(Df, 4,2))
+    project!(component(DF, 4, 3), component(Df, 4,3))
+    project!(component(DF, 4, 4), component(Df, 4,4) + Derivative(1,0) + λ*Derivative(0,1))
 
     return F, DF
 end
