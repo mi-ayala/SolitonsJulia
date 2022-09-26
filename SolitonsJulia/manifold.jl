@@ -42,31 +42,24 @@ function Df!(Df, P, parameters)
     return Df
 end
 
-function F_DF!(F, DF, P, parameters, bundle)
+function F_DF!(F, DF, P, f, para, bundle)
 
     DF .= 0
 
-    ### θ, σ,
-    ### Prejection part
-    project!(F, -f!(f, P, parameters) + (Derivative(1,0) + λ*Derivative(0,1))*P*Sequence(Fourier(0, 1.0) ⊗ Taylor(1), [0, 1])
-    )
+    project!(F, -f!(f, P, para) + Derivative(1,0)*P)
     
-    #project!(component(DF, 2, 2), γ * Df!(component(DF, 2, 2), u, σ, ρ, β) - Derivative(1))
+    for i = 1:4
+    component(F, i) = component(F, i) +  λ*component(Derivative(0,1)*P,i)*Sequence(Fourier(0, 1.0) ⊗ Taylor(1), [0, 1]) 
+    end
+        
+    γ = project(
+        Sequence(Fourier(2, 1.0)^4, [zeros(5) ; zeros(5) ; [.5, 0, 0, 0, .5] ; -2 * [0.5im, 0, 0, 0, -0.5im]]),
+        space(bundle))
 
-
-    ### Periodic orbit condition
-    # γ = project(
-    # Sequence(Fourier(2, 1.0)^4, [zeros(5) ; zeros(5) ; [.5, 0, 0, 0, .5] ; -2 * [0.5im, 0, 0, 0, -0.5im]]),
-    # space(bundle))
-
-    # component(component(F, 1),1) = component(component(P, 1),1) - component(γ, 1) 
-    # component(component(F, 2),2) = component(component(P, 2),2) - component(γ, 2) 
-    # component(component(F, 3),3) = component(component(P, 3),3) - component(γ, 3) 
-
-    # ### Bundle condition  
-    # component(component(F, 1),1) = component(component(P, 1),1) - component(bundle, 1) 
-    # component(component(F, 2),2) = component(component(P, 2),2) - component(bundle, 2) 
-    # component(component(F, 3),3) = component(component(P, 3),3) - component(bundle, 3) 
+    for i = 1:4
+    component(F, i)[(:,0)] .= component(P, i)[(:,0)] .- component(γ, i)
+    component(F, i)[(:,1)] .= component(P, i)[(:,1)] .- component(bundle, i)
+    end
 
     return F, DF
 end

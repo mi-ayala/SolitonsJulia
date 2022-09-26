@@ -1,9 +1,10 @@
 using RadiiPolynomial, UnPack
+using .SolitonsJulia
 
-N=3
-N_T=3
+N=2
+N_T=5
 
-p = parameters()
+para = soliton_parameters()
 λ = 1
 
 ### Tensor product components 
@@ -14,7 +15,6 @@ f = Sequence(s_mani, zeros(ComplexF64, dimension(s_mani)))
 
 #h = Sequence(space(result)[1], h) # Turn it into sequence
 #Derivative(1,0)*P*Sequence(Taylor(1) ⊗ Fourier(0, 1.0), [0, 1])
-
 
 
 function f!(f, P, parameters)
@@ -31,12 +31,22 @@ function f!(f, P, parameters)
 
 end
 
-# project!(P, -f!(f, P, parameters) + (Derivative(1,0) + λ*Derivative(0,1))*P*Sequence(Fourier(0, 1.0) ⊗ Taylor(1), [0, 1])
-#  )
+F = Sequence(s_mani, zeros(ComplexF64, dimension(s_mani)))
+P_input = P
 
-# f!(f, P, p)
+project!(F, -f!(f, P_input, para) + Derivative(1,0)*P_input)
+ 
+ for i = 1:4
+ component(F, i) = component(F, i) +  λ*component(Derivative(0,1)*P_input,i)*Sequence(Fourier(0, 1.0) ⊗ Taylor(1), [0, 1]) 
+ end
+    
+γ = project(
+     Sequence(Fourier(2, 1.0)^4, [zeros(5) ; zeros(5) ; [.5, 0, 0, 0, .5] ; -2 * [0.5im, 0, 0, 0, -0.5im]]),
+     Fourier(N, 1.0)^4)
+v = γ
 
-#(Derivative(1,0)*P + Derivative(0,1)*P*λ)*Sequence(Fourier(0, 1.0) ⊗ Taylor(1), [0, 1])
 
-
-Derivative(0,1)*P*Sequence((Fourier(0, 1.0) ⊗ Taylor(1))^4, [0,1,0,1,0,1,0,1])
+for i = 1:4
+component(F, i)[(:,0)] .= component(P_input, i)[(:,0)] .- component(γ, i)
+component(F, i)[(:,1)] .= component(P_input, i)[(:,1)] .- component(v, i)
+end

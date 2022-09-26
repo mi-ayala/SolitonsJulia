@@ -2,10 +2,10 @@ module SolitonsJulia
 
 using RadiiPolynomial, Parameters
 
-export parameters, cos2t
+export soliton_parameters, cos2t
 
 ### Parameter space
-@with_kw struct parameters{R}
+@with_kw struct soliton_parameters{R}
     E::R = 1
     A::R = -3
     s::R = 1
