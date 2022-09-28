@@ -2,7 +2,10 @@ module SolitonsJulia
 
 using RadiiPolynomial, Parameters
 
-export soliton_parameters, cos2t
+export soliton_parameters, cos2t, get_bundle
+
+include("get_bundle.jl")
+
 
 ### Parameter space
 @with_kw struct soliton_parameters{R}
@@ -13,6 +16,7 @@ end
 
 ### Fourier series for cosine
 cos2t = Sequence(Fourier(2, 1.0), [.5, 0, 0, 0, .5])
+
 
 
 
