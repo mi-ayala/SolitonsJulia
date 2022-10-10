@@ -12,7 +12,7 @@ para = soliton_parameters()
 ### Manifold
 N_T = 1
 s_mani = (Fourier(N_F, 1.0) ⊗ Taylor(N_T))^4
-P = Sequence(s_mani, zeros(ComplexF64, dimension(s_mani)))
+P = Sequence(s_mani, ones(ComplexF64, dimension(s_mani)))
 
 
 DF = LinearOperator(s_mani, s_mani, zeros(ComplexF64, 4*(2*N_F+1)*(N_T+1), 4*(2*N_F+1)*(N_T+1)))
@@ -122,3 +122,6 @@ end
     F!(F, P, para, N_F, N_T,v)
 
     DF!(DF, P, para, N_F, N_T)
+
+
+    newton!((F, DF, x) -> (F!(F, P, para, N_F, N_T,v), DF!(DF, P, para, N_F, N_T)), P)
