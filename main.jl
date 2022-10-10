@@ -1,32 +1,43 @@
 using .SolitonsJulia
 using RadiiPolynomial, UnPack
 
-### Bundle
-N_F = 3
+### Parameters
+N_F = 20
 A = -3
 E = 1
 para = soliton_parameters()
 
+### Bundle
 λ, v = get_bundle(N_F, A, E)
 
-### Manifold
-N_T = 1
+### Manifold initial guess
+N_T = 20
 s_mani = (Fourier(N_F, 1.0) ⊗ Taylor(N_T))^4
+
+### Periodic orbit data
 P = Sequence(s_mani, ones(ComplexF64, dimension(s_mani)))
 
+γ = project(
+    Sequence(Fourier(2, 1.0)^4, [zeros(5) ; zeros(5) ; [.5, 0, 0, 0, .5] ; -2 * [0.5im, 0, 0, 0, -0.5im]]),
+    space(v))
 
-DF = LinearOperator(s_mani, s_mani, zeros(ComplexF64, 4*(2*N_F+1)*(N_T+1), 4*(2*N_F+1)*(N_T+1)))
-F = P
+for i in 1:4
+    component(P, i)[(:,0)] .= component(γ, i)
+    component(P, i)[(:,1)] .= component(v, i)
+end
 
-Df = DF
-f = P
+### Tapes 
+DF_ = LinearOperator(s_mani, s_mani, zeros(ComplexF64, 4*(2*N_F+1)*(N_T+1), 4*(2*N_F+1)*(N_T+1)))
+F_ = Sequence(s_mani, zeros(ComplexF64, dimension(s_mani)))
 
 
-### Function
-function f!(P, parameters, N_F, N_T)
+
+### Vector field manifold
+function f(P, parameters, N_F, N_T)
 
     s_mani = (Fourier(N_F, 1.0) ⊗ Taylor(N_T))^4
     f=Sequence(s_mani, zeros(ComplexF64, dimension(s_mani)))
+    
     @unpack E, A, s = parameters   
     P₁, P₂, P₃, P₄ = eachcomponent(P)
 
@@ -70,7 +81,7 @@ end
 
 function F!(F, P, para, N_F, N_T,v)
 
-    project!(F, -f!(P, para, N_F, N_T) + Derivative(1,0)*P)
+    project!(F, -f(P, para, N_F, N_T) + Derivative(1,0)*P)
 
     γ = project(
         Sequence(Fourier(2, 1.0)^4, [zeros(5) ; zeros(5) ; [.5, 0, 0, 0, .5] ; -2 * [0.5im, 0, 0, 0, -0.5im]]),
@@ -119,9 +130,7 @@ end
 
 
 ### Testing
-    F!(F, P, para, N_F, N_T,v)
+     manifold = F!(F_, P, para, N_F, N_T, v)
 
-    DF!(DF, P, para, N_F, N_T)
-
-
-    newton!((F, DF, x) -> (F!(F, P, para, N_F, N_T,v), DF!(DF, P, para, N_F, N_T)), P)
+    # DF!(DF_, P, para, N_F, N_T)
+    newton!((F_, DF_, x) -> (F!(F_, x, para, N_F, N_T,v), DF!(DF_, x, para, N_F, N_T)), P)
