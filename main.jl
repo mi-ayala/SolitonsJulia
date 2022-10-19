@@ -20,3 +20,31 @@ parameters = soliton_parameters()
 P = get_manifold(N_F, N_T, parameters, λ, v, γ );
 
 
+### Plotting manifold
+
+using GLMakie
+t_range = range(0, stop=2π, length = 100)
+σ_range = -1:0.1:1
+surface([real(component(P, 1)(t, σ)[(0,0)]) for t in t_range, σ in σ_range],
+    [real(component(P, 2)(t, σ)[(0,0)]) for t in t_range, σ in σ_range],
+    [real(component(P, 3)(t, σ)[(0,0)]) for t in t_range, σ in σ_range])
+
+for σ = σ_range
+    lines!([real(component(P, 1)(t, σ)[(0,0)]) for t in t_range],
+    [real(component(P, 2)(t, σ)[(0,0)]) for t in t_range],
+    [real(component(P, 3)(t, σ)[(0,0)]) for t in t_range];
+        transparency = true, linewidth = 3)
+end
+
+# surface([real(component(P, 3)(t, σ)[(0,0)]) for t in t_range, σ in σ_range],
+#     [real(component(P, 4)(t, σ)[(0,0)]) for t in t_range, σ in σ_range],
+#     [real(component(P, 2)(t, σ)[(0,0)]) for t in t_range, σ in σ_range])
+
+# for σ = σ_range
+#     lines!([real(component(P, 3)(t, σ)[(0,0)]) for t in t_range],
+#     [real(component(P, 4)(t, σ)[(0,0)]) for t in t_range],
+#     [real(component(P, 1)(t, σ)[(0,0)]) for t in t_range])
+# end
+
+
+
