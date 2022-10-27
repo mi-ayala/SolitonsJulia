@@ -4,6 +4,7 @@ authors = ["Miguel Ayala <miguel.guadarramaayala@mail.mcgill.ca>"]
 version = "0.1.0"
 
 [deps]
+ApproxFun = "28f2ccd6-bb30-5033-b560-165f7b14dc2f"
 ColorSchemes = "35d6a980-a343-548e-a6ea-1d62b119f2f4"
 DifferentialEquations = "0c46a032-eb83-5123-abaf-570d42b7fbaa"
 GLMakie = "e9467ef8-e4e7-5192-8a1a-b1aee30e663a"
