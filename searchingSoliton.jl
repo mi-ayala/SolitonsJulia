@@ -20,13 +20,38 @@ end
    # and then we can use this function in a problem:
    
    u0 = [ 0.909917938392809;  -1.076582247110947;  -0.216389906598672;  -1.952614051288393]
-   tspan = (0,-2.5)
+   tspan = (0, 25)
    prob = ODEProblem(vectorField!,u0,tspan)
    sol = solve(prob, VCABM(),abstol = 1e-13, reltol = 1e-13)
    # Using the plot recipe tools defined on the plotting page, we can choose to do a 3D phase space plot between the different variables:
    
    plot(sol,idxs=(0,1))
 
+
+##Function below computes the Chebyshev nodes in [-1,1].
+ 
+# function cheb_nodes(N::Integer)
+#     req_nodes = cos.(pi*((0:1:N))/N);
+#     return req_nodes
+# end
+ 
+# ##Function below gets the Chebyshev coefficients of the usual Chebyshev interpolant. Note that f0 needs to be your function evaluated at the output of cheb_nodes, and N needs to match your input from cheb_nodes.
+ 
+# function cheb_interp(f₀,N::Integer)
+#     a = zeros(eltype(f₀),N+1);
+#     e₁ = exp.(im*pi*(0:1:N)/N);
+#     e₂ = exp.(-im*pi*(0:1:N)/N);
+#     T = similar(a);
+#     for n in 0:N
+#         T[:] = real.(e₁.^n + e₂.^n)/2;
+#         T[1] = T[1]/2;  T[end] = T[end]/2;
+#         if n==N
+#             T[:] = T[:]/2;
+#         end
+#         a[n+1] = (T'*f₀)/N;
+#     end
+#     return a
+# end
 
 
    
