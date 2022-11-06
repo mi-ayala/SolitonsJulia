@@ -23,8 +23,6 @@ P = get_manifold(N_F, N_T, parameters, λ, v, γ );
  t_range = range(0, stop=2π, length = 10)
 
 
-
-
  σ_range = .9
 
  u₀ = []
@@ -38,8 +36,6 @@ end
 #      [real(component(P, 4)(t, σ)[(0,0)]) for t in t_range, σ in σ_range],
 #      [real(component(P, 1)(t, σ)[(0,0)]) for t in t_range, σ in σ_range],
 #      colormap = ColorSchemes.BrBG_10.colors,)
-
-
 
 
 for i ∈ 1:10
