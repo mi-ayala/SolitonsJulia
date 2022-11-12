@@ -17,15 +17,49 @@ function vectorField!(du,u,p,t)
     du[4] = -4.0*u[3]
 end
    
-   # and then we can use this function in a problem:
+# function condition(u,t,integrator) # Event when event_f(u,t) == 0
+#     u[2]
+# end
+
+condition1(u,t,integrator) = u[2]
+affect!(integrator) = terminate!(integrator)
+cb1 = ContinuousCallback(condition1,affect!)
+
+condition2(u,t,integrator) = u[4]
+affect!(integrator) = terminate!(integrator)
+cb2 = ContinuousCallback(condition2,affect!)
+
+   #### Testing shooting
    
    u0 = [ 0.909917938392809;  -1.076582247110947;  -0.216389906598672;  -1.952614051288393]
-   tspan = (0, 25)
+   tspan = -(0, 10)
    prob = ODEProblem(vectorField!,u0,tspan)
-   sol = solve(prob, VCABM(),abstol = 1e-13, reltol = 1e-13)
+
+
+   #sol = solve(prob, VCABM(),abstol = 1e-13, reltol = 1e-13)
+   sol = solve(prob, VCABM(),abstol = 1e-13, reltol = 1e-13, callback=cb1)
+
    # Using the plot recipe tools defined on the plotting page, we can choose to do a 3D phase space plot between the different variables:
    
    plot(sol,idxs=(0,1))
+
+
+   ### Effect function with saving value
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
 
 
 ##Function below computes the Chebyshev nodes in [-1,1].
@@ -55,3 +89,6 @@ end
 
 
    
+
+
+

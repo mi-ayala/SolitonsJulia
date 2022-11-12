@@ -23,7 +23,10 @@ P = get_manifold(N_F, N_T, parameters, λ, v, γ );
  t_range = range(0, stop=2π, length = 10)
 
 
- σ_range = .9
+ σ_range = -1:1
+
+
+ σ = .9
 
  u₀ = []
 for t ∈ t_range 
@@ -32,23 +35,33 @@ for t ∈ t_range
 
 end
     
+
+
 #  surface([real(component(P, 3)(t, σ)[(0,0)]) for t in t_range, σ in σ_range],
 #      [real(component(P, 4)(t, σ)[(0,0)]) for t in t_range, σ in σ_range],
 #      [real(component(P, 1)(t, σ)[(0,0)]) for t in t_range, σ in σ_range],
 #      colormap = ColorSchemes.BrBG_10.colors,)
 
 
+
+
+#### Shooting for solitons
+
 for i ∈ 1:10
 
     tspan = (0, 1)
     prob = ODEProblem(vectorField!,u₀[i],tspan)
     sol = solve(prob, VCABM(),abstol = 1e-13, reltol = 1e-13)
+    
     # Using the plot recipe tools defined on the plotting page, we can choose to do a 3D phase space plot between the different variables:
     
     plot(sol,idxs=(0,1))
     
 
 end
+
+
+
 
 
 ### Plotting manifold

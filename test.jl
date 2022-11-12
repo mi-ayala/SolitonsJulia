@@ -19,7 +19,6 @@ A₁ = component(A,1,1)
 ### Derivative first variable with respect to its variables
 A₁.= rand(6,6)
 
-
 ### Taylor 0 - Taylor -0 / First fourier column
 component(A,1,1)[(:,0),(-1,0)]
 
