@@ -4,11 +4,12 @@ using RadiiPolynomial
 using Parameters
 
 
-export soliton_parameters,  get_bundle, get_manifold
+export soliton_parameters, get_bundle, get_manifold, vectoField!
 
 
 include("get_bundle.jl")
 include("get_manifold.jl")
+include("vectorField!.jl")
 
 
 ### Parameter space

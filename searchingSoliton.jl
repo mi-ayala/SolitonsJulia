@@ -25,9 +25,21 @@ condition1(u,t,integrator) = u[2]
 affect!(integrator) = terminate!(integrator)
 cb1 = ContinuousCallback(condition1,affect!)
 
+
+
 condition2(u,t,integrator) = u[4]
 affect!(integrator) = terminate!(integrator)
 cb2 = ContinuousCallback(condition2,affect!)
+
+
+
+function affect!(integrator)
+    integrator.opts.userdata[:callback_count] +=1
+    if integrator.opts.userdata[:callback_count] == integrator.opts.userdata[:max_count]
+        terminate!(integrator)
+    end
+end
+
 
    #### Testing shooting
    
