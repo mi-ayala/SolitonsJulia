@@ -3,10 +3,10 @@ using RadiiPolynomial
 using DifferentialEquations, Plots
 
 
-### Finding Solitons
+### Finding Solitons - Shooting
 
 ### Modes
-N_F = 20
+N_F = 23
 N_T = 20
 
 
@@ -27,8 +27,9 @@ parameters = soliton_parameters()
 ### Manifold 
 P = get_manifold(N_F, N_T, parameters, λ, v, γ );
 
-N = 10
-### Testing manifold
+N = 25000
+
+### Manifold points
 t_range = range(0, stop=2π, length = N)
 
 
@@ -44,51 +45,55 @@ for t ∈ t_range
 end
     
 
+
+### Finding
 function condition(u,t,integrator)
     u[2]
-    u[4]
  end
   
-
 initial_condition = []  
 bump = []
 p=0
 
-
 for i ∈  1:N
 
-    u0 = u₀[i]
+    u₀[i]
 
     function affect!(integrator) 
-        push!(initial_condition, u0 )
         terminate!(integrator)
     end
 
     cb = ContinuousCallback(condition,affect!)
 
     tspan = -(0, 5)
-    prob = ODEProblem(vectorField!,u0,tspan,p)
-    sol = solve(prob, VCABM(),abstol = 1e-13, reltol = 1e-13, callback=cb)
+    prob = ODEProblem(vectorField!,u₀[i],tspan,p)
+    sol = solve(prob, VCABM(),abstol = 1e-14, reltol = 1e-14, callback=cb)
     push!(bump, sol[end] )
 
 end
 
 
+for i ∈  1:N
+
+    if abs(bump[i][4]) < 1e-4
+        push!(initial_condition, u₀[i] )
+    end    
+
+end
 
 
 
-# tspan = -(0, 5)
-# prob = ODEProblem(vectorField!,u₀[1],tspan,p)
-# sol = solve(prob, VCABM(),abstol = 1e-13, reltol = 1e-13)
+### Plots
+tspan = -(0, 4)
+prob = ODEProblem(vectorField!,initial_condition[1],tspan,p)
+sol = solve(prob, VCABM(),abstol = 1e-14, reltol = 1e-14)
+fig = plot(sol.t[:] , sol[1,:])
 
-# fig = plot(sol.t[:] , sol[1,:])
 
-
-
-# for i ∈  2:N
+# for i ∈  2:length(initial_condition)
 
 #     tspan1 = -(0, 5)
-#     prob1 = ODEProblem(vectorField!,u₀[i],tspan1,p)
+#     prob1 = ODEProblem(vectorField!,initial_condition[i],tspan1,p)
 #     sol1 = solve(prob1, VCABM(),abstol = 1e-13, reltol = 1e-13)
  
 #     plot!(fig, sol1.t[:] , sol1[1,:])
