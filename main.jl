@@ -1,4 +1,4 @@
-using SolitonsJulia
+using .SolitonsJulia
 using RadiiPolynomial
 using DifferentialEquations, Plots
 
@@ -6,8 +6,8 @@ using DifferentialEquations, Plots
 ### Finding Solitons - Shooting
 
 ### Modes
-N_F = 23
-N_T = 20
+N_F = 35
+N_T = 30
 
 
 ### Parameters
