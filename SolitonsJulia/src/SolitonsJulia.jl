@@ -4,7 +4,7 @@ using RadiiPolynomial
 using Parameters
 
 
-export soliton_parameters, get_bundle, get_manifold, vectoField!
+export soliton_parameters, get_bundle, get_manifold, vectorField!
 
 
 include("get_bundle.jl")
