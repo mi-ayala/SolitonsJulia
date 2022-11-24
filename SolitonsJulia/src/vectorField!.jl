@@ -1,11 +1,9 @@
 
 # export condition, affect!, initial_condition, u0
 
-function vectorField!(du,u,p,t)
+function vectorField!(du,u,parameters,t)
 
-    E = 1.0
-    A = -3.0
-    s = 1.0
+    @unpack E, A, s = parameters 
 
     du[1] = u[2]
     du[2] = -E*u[1] + A*u[3]*u[1] + s*u[1]*u[1]*u[1]

@@ -34,7 +34,7 @@ function F!(F, x, Df)
     λ = component(x, 1)[1]
     v = component(x, 2)
 
-    F[1] = component(v, 1)(0)[0] - .5
+    F[1] = component(v, 1)(0)[0] - .55
     project!(component(F, 2), (Derivative(1) - Df + λ * I) * v)
 
     return F
