@@ -26,11 +26,9 @@ affect!(integrator) = terminate!(integrator)
 cb1 = ContinuousCallback(condition1,affect!)
 
 
-
 condition2(u,t,integrator) = u[4]
 affect!(integrator) = terminate!(integrator)
 cb2 = ContinuousCallback(condition2,affect!)
-
 
 
 function affect!(integrator)
