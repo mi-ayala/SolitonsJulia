@@ -7,8 +7,8 @@ using ForwardDiff
 ### Finding Solitons - Shooting
 
 ### Modes
-N_F = 20
-N_T = 12
+N_F = 15
+N_T = 10
 
 
 ### Parameters
@@ -20,38 +20,35 @@ parameters = soliton_parameters()
 
 
 ### Periodic Orbit
-γ = project(
-    Sequence(Fourier(2, 1.0)^4, [zeros(5); zeros(5); [0.5, 0, 0, 0, 0.5]; -2 * [0.5im, 0, 0, 0, -0.5im]]),
-    space(v))
+# γ = project(
+#     Sequence(Fourier(2, 1.0)^4, [zeros(5); zeros(5); [0.5, 0, 0, 0, 0.5]; -2 * [0.5im, 0, 0, 0, -0.5im]]),
+#     space(v))
 
 
-# # # ### Manifold 
- P = get_manifold(N_F, N_T, parameters, λ, v, γ )
-
-# # # # 	file = jldopen("Manifold.jld2");
-# # # # 	P = file["P"];
+# # # # ### Manifold 
+#  P = get_manifold(N_F, N_T, parameters, λ, v, γ )
 
 # # # # jldsave("Manifold.jld2"; P)
 
-# # # # file = jldopen("Manifold.jld2");
-# # # # P = file["P"];
+file = jldopen("ManifoldFD.jld2");
+P = file["P"];
 
-#   N = 100
+  N = 1000
 
 # # # # ### Manifold points
-#  t_range = range(0, stop=2π, length = N)
+t_range = range(0, stop=2π, length = N)
 
 
-# # # #  σ_range = -1:1
-#     σ = 1
+# # #  σ_range = -1:1
+    σ = 1
 
-#     u₀= []
+    u₀= []
  
-#    for t ∈ t_range 
+   for t ∈ t_range 
 
-#        push!(u₀ , [real(component(P, 1)(t, σ)[(0,0)]), real(component(P, 2)(t, σ)[(0,0)]), real(component(P, 3)(t, σ)[(0,0)]), real(component(P, 4)(t, σ)[(0,0)])])
+       push!(u₀ , [real(component(P, 1)(t, σ)[(0,0)]), real(component(P, 2)(t, σ)[(0,0)]), real(component(P, 3)(t, σ)[(0,0)]), real(component(P, 4)(t, σ)[(0,0)])])
 
-#    end
+   end
     
 # using Plots
 
@@ -72,113 +69,112 @@ parameters = soliton_parameters()
 
 
 
- # ### Finding
-#   function condition(u,t,integrator)
-#       u[2]
-#    end
+ ### Finding
+  function condition(u,t,integrator)
+      u[2]
+   end
   
-#  initial_condition = []  
-#  bump = []
+ initial_condition = []  
+ bump = []
 
 
-# for i ∈  1:N
+for i ∈  1:N
 
-#     u₀[i]
+    u₀[i]
 
-#     function affect!(integrator) 
-#         terminate!(integrator)
-#     end
+    function affect!(integrator) 
+        terminate!(integrator)
+    end
 
-#     cb = ContinuousCallback(condition,affect!)
+    cb = ContinuousCallback(condition,affect!)
 
-#     tspan = -(0, 10)
-#     prob = ODEProblem(vectorField!,u₀[i],tspan,parameters)
-#     sol = solve(prob, VCABM(),abstol = 1e-14, reltol = 1e-14, callback=cb)
-#     push!(bump, sol[end] )
+    tspan = -(0, 10)
+    prob = ODEProblem(vectorField!,u₀[i],tspan,parameters)
+    sol = solve(prob, VCABM(),abstol = 1e-14, reltol = 1e-14, callback=cb)
+    push!(bump, sol[end] )
 
-# end
-
-
-# for i ∈  1:N
-
-#     if abs(bump[i][4]) < 1e-3
-#         push!(initial_condition, u₀[i] )
-#     end    
-
-# end
+end
 
 
-# # function search(x,  parameters)
+for i ∈  1:N
+
+    if abs(bump[i][4]) < 1e-3
+        push!(initial_condition, u₀[i] )
+    end    
+
+end
+
+
+function search(x,  parameters)
 	
-# #     σ = x[1]
-# #     L = x[2]
-# #     t = -.9
+    σ = x[1]
+    L = x[2]
+    t = -.9
     
-# #     u0 = [real(component(P, 1)(t, σ)[(0,0)]), real(component(P, 2)(t, σ)[(0,0)]), real(component(P, 3)(t, σ)[(0,0)]), real(component(P, 4)(t, σ)[(0,0)])]
+    u0 = [real(component(P, 1)(t, σ)[(0,0)]), real(component(P, 2)(t, σ)[(0,0)]), real(component(P, 3)(t, σ)[(0,0)]), real(component(P, 4)(t, σ)[(0,0)])]
 
-# #    tspan = -(0, L)
-# #    prob = ODEProblem(vectorField!,u0,tspan,parameters)
-# #    sol = solve(prob, VCABM(),abstol = 1e-13, reltol = 1e-14)
-# #    out = [sol[end][2], sol[end][4] ]
+   tspan = -(0, L)
+   prob = ODEProblem(vectorField!,u0,tspan,parameters)
+   sol = solve(prob, VCABM(),abstol = 1e-13, reltol = 1e-14)
+   out = [sol[end][2], sol[end][4] ]
 
-# #     return out
+    return out
       
-# # end
+end
 
-# # # DF = x0 -> ForwardDiff.jacobian(x -> search(x,parameters) , x0)
+# DF = x0 -> ForwardDiff.jacobian(x -> search(x,parameters) , x0)
 
-# # N = 200
-# # L_N = 200
-# # L_range = range(1, stop=25, length = L_N)
-# # theta_range = range(0, stop=2π, length = N)
-# # data_points = zeros(L_N,3, N)
-
-
-# # for i ∈ 1:N 
-
-# #     for j ∈ 1:L_N
-
-# #         dist = norm(search([theta_range[i]  L_range[j] ],  parameters))
-# #         data_points[j,:,i] = [theta_range[i]  L_range[j]  dist ]
-
-# #     end
-
-# # end    
-
-# # global Filter_data = [0 0 0]
+N = 200
+L_N = 200
+L_range = range(1, stop=25, length = L_N)
+theta_range = range(0, stop=2π, length = N)
+data_points = zeros(L_N,3, N)
 
 
-# # for i ∈ 1:N 
+for i ∈ 1:N 
 
-# #     for j ∈ 1:L_N
+    for j ∈ 1:L_N
 
-# #         if data_points[j,3,i] < 10
+        dist = norm(search([theta_range[i]  L_range[j] ],  parameters))
+        data_points[j,:,i] = [theta_range[i]  L_range[j]  dist ]
 
-# #             Filter_data = [Filter_data; transpose(data_points[j,:,i])]
-# #         end    
+    end
 
-# #     end
+end    
 
-# # end 
+global Filter_data = [0 0 0]
 
-# # using GLMakie
 
-# # function plot_peaks_function(x,y,z)
+for i ∈ 1:N 
+
+    for j ∈ 1:L_N
+
+        if data_points[j,3,i] < 10
+
+            Filter_data = [Filter_data; transpose(data_points[j,:,i])]
+        end    
+
+    end
+
+end 
+
+using GLMakie
+
+function plot_peaks_function(x,y,z)
  
-# #     fig = Figure(resolution=(900, 900))
-# #     axs = Axis3(fig) 
-# #     surface!(axs, x, y, z,
-# #     colormap = :plasma)
-# #     axs.xlabel = "θ"
-# #     axs.ylabel = "L"
-# #     axs.zlabel = "Norm (u2,u4)"
+    fig = Figure(resolution=(900, 900))
+    axs = Axis3(fig) 
+    GLMakie.surface!(axs, x, y, z, colormap = :plasma)
+    axs.xlabel = "θ"
+    axs.ylabel = "L"
+    axs.zlabel = "Norm (u2,u4)"
 
-# #     fig[1,1] = axs
-# #     fig
-# # end
+    fig[1,1] = axs
+    fig
+end
 
 
-# # plot_peaks_function( Filter_data[:,1], Filter_data[:,2], Filter_data[:,3])
+plot_peaks_function( Filter_data[:,1], Filter_data[:,2], Filter_data[:,3])
 
 
 

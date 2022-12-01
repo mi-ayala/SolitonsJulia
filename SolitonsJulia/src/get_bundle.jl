@@ -8,11 +8,13 @@ function get_bundle(N_F, parameters)
 
     newton!((F, DF, x) -> (F!(F, x, Df), DF!(DF, x, Df)), x)
 
-    λ = real(x[1])
-    v = component(x, 2)
+     λ = real(x[1])
+     v = component(x, 2)
 
 
     return λ, v
+
+ 
 
 end
 
@@ -34,7 +36,7 @@ function F!(F, x, Df)
     λ = component(x, 1)[1]
     v = component(x, 2)
 
-    F[1] = component(v, 1)(0)[0] - 3
+    F[1] = component(v, 1)(0)[0] - 5
     project!(component(F, 2), (Derivative(1) - Df + λ * I) * v)
 
     return F
