@@ -15,7 +15,8 @@ include("vectorField!.jl")
 ### Parameter space
 @with_kw struct soliton_parameters{R}
     E::R = 1
-    A::R = -3
+    #A::R = -3
+    A::R = -1
     s::R = 1
 end
 
