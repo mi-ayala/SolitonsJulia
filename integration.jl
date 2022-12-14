@@ -1,4 +1,5 @@
 using DifferentialEquations, Plots
+#### "Soliton" from MATLAB
 
 function condition(out,u,t,integrator) # Event when event_f(u,t) == 0
   out[1] = u[2]
