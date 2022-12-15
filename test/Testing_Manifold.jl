@@ -38,7 +38,7 @@ using RadiiPolynomial
 using DifferentialEquations
 using JLD2
 
-file = jldopen("Manifold_Bundle.jld2")
+file = jldopen("Manifold_Bundle_FD.jld2")
 P = file["P"]
 v = file["v"]
 λ = file["λ"]
@@ -82,8 +82,9 @@ function shooting!(initial_condition,P,t_final, N, σ)
             function affect!(integrator) 
                 
 
-                if abs(integrator.u[4]) < 1e-5
+                if abs(integrator.u[4]) < 1e-4
                     push!(initial_condition, u₀[i] )
+                    println("1")
                 end    
 
 
@@ -93,7 +94,7 @@ function shooting!(initial_condition,P,t_final, N, σ)
 
             tspan = -(0, t_final)
             prob = ODEProblem(vectorField!,u₀[i],tspan,parameters)
-            sol = solve(prob, VCABM(),abstol = 1e-14, reltol = 1e-14, callback=cb)
+            sol = solve(prob, Rosenbrock23(),abstol = 1e-10, reltol = 1e-10, callback=cb)
             #push!(bump, sol[end])
 
         end
@@ -122,7 +123,7 @@ function checking(P, t_final, N, σ)
 
         tspan = (0, t_final)
         prob = ODEProblem(vectorField!,u₀[i],tspan,parameters)
-        sol = solve(prob, VCABM(),abstol = 1e-14, reltol = 1e-14)
+        sol = solve(prob, Rosenbrock23(),abstol = 1e-10, reltol = 1e-10)
 
         integration_ending[i,:] = sol[end]
     end
@@ -133,10 +134,10 @@ end
 
 
 ### Building boundary points
-N = 1000
+N = 100
 t_range = range(0, stop=2π, length = N)
 u₀= []
-σ = .9
+
 
 for t ∈ t_range 
 
@@ -145,8 +146,11 @@ for t ∈ t_range
 end
 
 ### Checking 
-### checking(P, -10, N, σ)
+checking(P, 10, N, .9)
 
-### Finding
-ic = []
-shooting!(ic,P,20, N, σ)
+# ### Finding
+# ic = []
+#  σ = .9
+
+#  shooting!(ic, P, 25, 500,  σ)
+#  shooting!(ic, P, 25, 500, -σ)

@@ -41,22 +41,22 @@ function DF!(DF, x, Df)
     return DF
 end
 
-# Complex{Float64} == ComplexF64
+# # Complex{Float64} == ComplexF64
 
-N = 20
-A = -3
-E = 1
+# N = 20
+# A = -3
+# E = 1
 
-s = ParameterSpace() × Fourier(N, 1.0)^4
-x = Sequence(s, rand(Complex{Float64}, dimension(s)))
+# s = ParameterSpace() × Fourier(N, 1.0)^4
+# x = Sequence(s, rand(Complex{Float64}, dimension(s)))
 
-Df = jac_vectorfield(N, A, E)
+# Df = jac_vectorfield(N, A, E)
 
-newton!((F, DF, x) -> (F!(F, x, Df), DF!(DF, x, Df)), x)
+# newton!((F, DF, x) -> (F!(F, x, Df), DF!(DF, x, Df)), x)
 
-λ = real(x[1])
-v = component(x, 2)
-newton!((F, DF, x) -> (F!(F, x, Df), DF!(DF, x, Df)), x)
+# λ = real(x[1])
+# v = component(x, 2)
+# newton!((F, DF, x) -> (F!(F, x, Df), DF!(DF, x, Df)), x)
 
 
 # x̄ = x

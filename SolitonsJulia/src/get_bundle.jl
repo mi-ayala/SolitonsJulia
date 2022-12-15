@@ -18,7 +18,6 @@ function get_bundle(N_F, parameters)
 
 end
 
-
 function jac_vectorfield(N, A, E)
     Df_ = LinearOperator(Fourier(N, 1.0)^4, Fourier(N, 1.0)^4, zeros(ComplexF64, 4 * (2 * N + 1), 4 * (2 * N + 1)))
     cos2t = Sequence(Fourier(2, 1.0), [0.5, 0, 0, 0, 0.5])
