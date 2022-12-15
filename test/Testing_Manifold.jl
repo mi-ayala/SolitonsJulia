@@ -14,9 +14,6 @@
 ####################################
 ### 1. Bundle with N_F=17, phase condition with .5 
 ### 2. 
-### 3. 
-### 4. 
-### 5. 
 ####################################
 
 ####################################
@@ -59,7 +56,7 @@ s = 1
 parameters = soliton_parameters()
 
 
-function shooting!(initial_condition,t_final, N, σ)
+function shooting!(initial_condition,P,t_final, N, σ)
 
 
         t_range = range(0, stop=2π, length = N)
@@ -85,7 +82,7 @@ function shooting!(initial_condition,t_final, N, σ)
             function affect!(integrator) 
                 
 
-                if abs(integrator.u[4]) < 1e-4
+                if abs(integrator.u[4]) < 1e-5
                     push!(initial_condition, u₀[i] )
                 end    
 
@@ -148,4 +145,8 @@ for t ∈ t_range
 end
 
 ### Checking 
-checking(P, 10, N, σ)
+### checking(P, -10, N, σ)
+
+### Finding
+ic = []
+shooting!(ic,P,20, N, σ)
